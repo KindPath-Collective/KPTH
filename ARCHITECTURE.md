@@ -1,4 +1,4 @@
-# KindPath Collective Platform — Architecture (KindEarth / KindPath)
+# KindPath Collective Platform — Architecture
 
 This document describes the platform architecture at a high level.
 The platform is designed to be:
@@ -16,7 +16,7 @@ The platform is designed to be:
 - **Digital Library** (shared knowledge, provenance, changelogs)
 - (Later) **Syntropic Food Tool**, **Q Audio Suite**
 
-### 2) Intelligence (KindEarth + KindPath Analysis)
+### 2) Intelligence (KindSense + KindPath Analysis)
 - **Ecological Evaluation** (constraints, capacity, congruence)
 - **Policy Analyser** (drift, syntropy/entropy, scenario exploration)
 - **Economic Forecasting** (in-house posture mapping only)
@@ -117,9 +117,9 @@ Tool	Primary Service(s)	Status
 Digital Library Tool	digital-library + storage + search	Active
 Life-Field Tool	kindpath-life-field + data-capture	Active/Building
 Ecological Evaluation Tool	ecological-tool + exports	Active/Building
-Social Policy Analyser	kindearth (planned) + worker	Planned
+Social Policy Analyser	kindsense (planned) + worker	Planned
 Social Impact Consulting Tool	pilot ops (planned)	Planned
-Economic Forecasting Tool	worker + kindearth signals	Planned (in-house)
+Economic Forecasting Tool	worker + kindsense signals	Planned (in-house)
 Syntropic Food Education Tool	(separate product lane)	Later
 ‘Q’ Audio Suite	(separate product lane)	Later
 Design Rules (Non-negotiable)
