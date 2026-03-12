@@ -1,3 +1,16 @@
+# AGENTS.md — KindPath Life Field
+
+## Session Init Protocol
+
+Before reading code or making changes, run:
+```bash
+cat ~/.kindpath/HANDOVER.md
+python3 ~/.kindpath/kp_memory.py dump --domain gotcha
+python3 ~/.kindpath/kp_memory.py dump
+```
+
+---
+
 Local-first only (LocalStorage + JSON export/import)
 
 No accounts, no cloud

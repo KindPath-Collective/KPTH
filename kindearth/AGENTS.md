@@ -1,5 +1,16 @@
 # KindEarth Suite — AGENTS.md (In-house rules)
 
+## Session Init Protocol
+
+Before reading code or making changes, run:
+```bash
+cat ~/.kindpath/HANDOVER.md
+python3 ~/.kindpath/kp_memory.py dump --domain gotcha
+python3 ~/.kindpath/kp_memory.py dump
+```
+
+---
+
 ## Non-negotiables
 - KindEarth is internal-only. Do NOT create any client-facing "productization" or licensing language.
 - No recommendation may be "shipped" unless all Five Gates have responses (answers may be "uncertain", but must exist).
