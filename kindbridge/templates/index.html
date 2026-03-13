@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KindBridge — Language Mechanics</title>
+  <style>
+    :root {
+      --bg:         #0f1117;
+      --bg-panel:   #181d26;
+      --bg-card:    #1e2433;
+      --border:     #2a3144;
+      --text:       #d4d8e1;
+      --text-dim:   #7b859a;
+      --accent:     #4f9cf9;
+      --accent-dim: #2a5b9e;
+      --green:      #3ecf8e;
+      --yellow:     #f5c842;
+      --red:        #e05252;
+      --mono:       'JetBrains Mono', 'Fira Mono', 'Menlo', monospace;
+      --sans:       system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ──────────────────────────────────────────────────────── */
+    .sidebar {
+      width: 260px;
+      min-width: 220px;
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .sidebar-header {
+      padding: 20px 18px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-header h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.03em;
+    }
+
+    .sidebar-header p {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+
+    .nav-section {
+      padding: 10px 0 4px;
+    }
+
+    .nav-section-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      padding: 0 18px 6px;
+    }
+
+    .nav-section a {
+      display: block;
+      padding: 7px 18px;
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+
+    .nav-section a:hover {
+      color: var(--text);
+      background: var(--bg-card);
+    }
+
+    .nav-section a.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: var(--bg-card);
+    }
+
+    .nav-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 8px 0;
+    }
+
+    /* ── Main ─────────────────────────────────────────────────────────── */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 36px 40px;
+      max-width: 860px;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    p {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .lead {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      margin-right: 4px;
+      margin-bottom: 4px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+    }
+
+    .card:hover {
+      border-color: var(--accent-dim);
+    }
+
+    .card-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .card-link:hover h3 {
+      color: var(--accent);
+    }
+
+    .empowerment-note {
+      border-left: 3px solid var(--green);
+      padding: 10px 14px;
+      background: rgba(62, 207, 142, 0.06);
+      border-radius: 0 6px 6px 0;
+      font-size: 0.87rem;
+      color: var(--green);
+      margin-top: 12px;
+      line-height: 1.6;
+    }
+
+    .insight-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .insight-box .feeling {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .insight-box .truth {
+      font-size: 0.9rem;
+      color: var(--green);
+      line-height: 1.7;
+      margin-bottom: 10px;
+    }
+
+    .insight-box .evidence-list {
+      padding: 0;
+      list-style: none;
+    }
+
+    .insight-box .evidence-list li {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      padding: 3px 0 3px 14px;
+      position: relative;
+    }
+
+    .insight-box .evidence-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--accent-dim);
+    }
+
+    .mechanic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .domain-strip {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .domain-pill {
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+
+    .domain-pill:hover, .domain-pill.active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .domain-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+      margin-top: 12px;
+    }
+
+    .domain-table th {
+      text-align: left;
+      padding: 8px 10px;
+      color: var(--text-dim);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .domain-table td {
+      padding: 10px 10px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      line-height: 1.6;
+    }
+
+    .domain-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      padding: 3px 9px;
+      border-radius: 4px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+
+    .badge.green { border-color: var(--green); color: var(--green); background: rgba(62,207,142,0.07); }
+    .badge.red   { border-color: var(--red); color: var(--red); background: rgba(224,82,82,0.07); }
+    .badge.yellow { border-color: var(--yellow); color: var(--yellow); background: rgba(245,200,66,0.07); }
+
+    /* ── Fagazzi tool ─────────────────────────────────────────────────── */
+    .fagazzi-area {
+      width: 100%;
+      min-height: 140px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: var(--text);
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .fagazzi-area:focus {
+      border-color: var(--accent-dim);
+    }
+
+    .btn {
+      padding: 9px 20px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.15s;
+    }
+
+    .btn:hover { opacity: 0.85; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-ghost   { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); }
+
+    #fagazzi-result {
+      margin-top: 20px;
+      display: none;
+    }
+
+    .score-ring {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .score-number {
+      font-size: 2.8rem;
+      font-family: var(--mono);
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .score-number.clear     { color: var(--green); }
+    .score-number.mild      { color: var(--text); }
+    .score-number.complex   { color: var(--yellow); }
+    .score-number.fagazzi   { color: var(--red); }
+
+    .signal-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+
+    .signal-item .span-text {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--yellow);
+      background: rgba(245,200,66,0.08);
+      padding: 2px 6px;
+      border-radius: 3px;
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+
+    .signal-item .plain {
+      font-size: 0.82rem;
+      color: var(--green);
+      margin-top: 4px;
+    }
+
+    .sequence-row {
+      display: flex;
+      gap: 14px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+
+    .sequence-row:last-child { border-bottom: none; }
+
+    .seq-num {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      min-width: 24px;
+      padding-top: 2px;
+    }
+
+    .seq-mins {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      min-width: 30px;
+      padding-top: 3px;
+    }
+
+    .core-statement {
+      font-size: 1rem;
+      line-height: 1.85;
+      color: var(--text);
+      border-left: 4px solid var(--accent);
+      padding: 18px 20px;
+      background: var(--bg-card);
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 28px;
+    }
+
+    .bridge-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+    }
+
+    .bridge-instances {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .bridge-instance {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 8px 10px;
+      font-size: 0.8rem;
+    }
+
+    .bridge-instance .domain-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+
+    .section-intro {
+      font-size: 0.9rem;
+      line-height: 1.75;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+
+    @media (max-width: 700px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; min-width: 0; overflow: visible; border-right: none; border-bottom: 1px solid var(--border); }
+      .main { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Sidebar ──────────────────────────────────────────────────────────── -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <h1>KindBridge</h1>
+    <p>Language mechanics without the gatekeeping.</p>
+  </div>
+
+  <nav>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Start here</div>
+      <a href="{{ url_for('home') }}" class="{{ 'active' if section == 'home' else '' }}">Overview</a>
+      <a href="{{ url_for('learning_sequence') }}" class="{{ 'active' if section == 'sequence' else '' }}">Learning Sequence</a>
+      <a href="{{ url_for('empower') }}" class="{{ 'active' if section == 'empower' else '' }}">Empowerment</a>
+    </div>
+
+    <div class="nav-divider"></div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Mechanics</div>
+      <a href="{{ url_for('all_mechanics') }}" class="{{ 'active' if section == 'mechanics' else '' }}">All Mechanics</a>
+      {% for layer in mechanics %}
+      <a href="{{ url_for('single_mechanic', name=layer.name) }}" class="{{ 'active' if section == 'mechanic_detail' and request.view_args.get('name') == layer.name else '' }}" style="padding-left:28px; font-size:0.77rem">{{ layer.name }}</a>
+      {% endfor %}
+    </div>
+
+    <div class="nav-divider"></div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Domains</div>
+      {% for d in domains %}
+      <a href="{{ url_for('single_domain', domain_id=d.id) }}" class="{{ 'active' if section == 'domain_detail' and request.view_args.get('domain_id') == d.id else '' }}">{{ d.name }}</a>
+      {% endfor %}
+    </div>
+
+    <div class="nav-divider"></div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Tools</div>
+      <a href="{{ url_for('bridges') }}" class="{{ 'active' if section == 'bridges' else '' }}">Bridges</a>
+      <a href="{{ url_for('limits') }}" class="{{ 'active' if section == 'limits' else '' }}">Limitations</a>
+      <a href="{{ url_for('fagazzi_page') }}" class="{{ 'active' if section == 'fagazzi' else '' }}">Fagazzi Checker</a>
+    </div>
+
+  </nav>
+</aside>
+
+<!-- ── Main Content ─────────────────────────────────────────────────────── -->
+<main class="main">
+
+  {% if section == "home" %}
+  <h2>You were not less than. You were perceptive.</h2>
+  <div class="core-statement">{{ core_statement | replace("\n", "<br>") | safe }}</div>
+  <p class="section-intro">
+    KindBridge teaches the mechanics of language — not the rules of a specific language,
+    but the structure that every language shares. Human, body, animal, plant, machine.
+    The architecture is the same. The channels are different.
+  </p>
+  <h3 style="margin-bottom:14px">Learning Sequence — {{ total_minutes }} minutes total</h3>
+  {% for step in sequence %}
+  <div class="sequence-row">
+    <span class="seq-num">{{ step.step_number }}</span>
+    <div style="flex:1">
+      <div style="font-size:0.88rem; font-weight:600; margin-bottom:2px">{{ step.title }}</div>
+      <div style="font-size:0.78rem; color:var(--text-dim)">{{ step.learning_goal }}</div>
+    </div>
+    <span class="seq-mins">{{ step.estimated_minutes }}m</span>
+  </div>
+  {% endfor %}
+
+
+  {% elif section == "mechanics" %}
+  <h2>Language Mechanics</h2>
+  <p class="section-intro">{{ intro }}</p>
+  <div class="mechanic-grid">
+    {% for layer in layers %}
+    <a href="{{ url_for('single_mechanic', name=layer.name) }}" class="card-link">
+      <div class="card">
+        <h3>{{ layer.name }}</h3>
+        <p style="font-size:0.84rem; color:var(--text-dim); margin-bottom:10px">{{ layer.plain_description[:120] }}…</p>
+        <div class="empowerment-note">{{ layer.empowerment_note[:140] }}…</div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+
+
+  {% elif section == "mechanic_detail" %}
+  <h2>{{ layer.name }}</h2>
+  <p class="lead">{{ layer.plain_description }}</p>
+
+  <div class="card">
+    <h4>Why it exists</h4>
+    <p>{{ layer.why_it_exists }}</p>
+    <h4 style="margin-top:12px">Common confusion</h4>
+    <p>{{ layer.common_confusion }}</p>
+  </div>
+
+  <h3 style="margin: 20px 0 12px">Across all five domains</h3>
+  <table class="domain-table">
+    <thead>
+      <tr><th>Domain</th><th>Example</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="badge">Human</span></td><td>{{ layer.example_human }}</td></tr>
+      <tr><td><span class="badge">Body</span></td><td>{{ layer.example_body }}</td></tr>
+      <tr><td><span class="badge">Animal</span></td><td>{{ layer.example_animal }}</td></tr>
+      <tr><td><span class="badge">Plant</span></td><td>{{ layer.example_plant }}</td></tr>
+      <tr><td><span class="badge">Machine</span></td><td>{{ layer.example_machine }}</td></tr>
+    </tbody>
+  </table>
+
+  <div class="empowerment-note" style="margin-top:20px">{{ layer.empowerment_note }}</div>
+
+
+  {% elif section == "domain_detail" %}
+  <div class="domain-strip">
+    {% for d in domains %}
+    <a href="{{ url_for('single_domain', domain_id=d.id) }}" class="domain-pill {{ 'active' if d.id == domain.id else '' }}">{{ d.name }}</a>
+    {% endfor %}
+  </div>
+
+  <h2>{{ domain.name }}</h2>
+  <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px">
+    <span class="badge">{{ domain.age_on_earth }}</span>
+    <span class="badge">{{ domain.primary_channel }}</span>
+    <span class="badge">{{ domain.bandwidth }}</span>
+  </div>
+  <p class="lead">{{ domain.description }}</p>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0">
+    <div class="card">
+      <h4>Strengths</h4>
+      {% for s in domain.strengths %}
+      <p style="margin-bottom:4px; font-size:0.84rem"><span style="color:var(--green)">+</span> {{ s }}</p>
+      {% endfor %}
+    </div>
+    <div class="card">
+      <h4>Limitations</h4>
+      {% for l in domain.limitations %}
+      <p style="margin-bottom:4px; font-size:0.84rem"><span style="color:var(--red)">−</span> {{ l }}</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>Common misconceptions</h4>
+    {% for m in domain.common_misconceptions %}
+    <p style="font-size:0.85rem; margin-bottom:6px"><span style="color:var(--red)">✗</span> {{ m }}</p>
+    {% endfor %}
+  </div>
+
+  <div class="card">
+    <h4>Sample expressions</h4>
+    {% for ex in domain.example_phrases %}
+    <p style="font-size:0.84rem; font-family:var(--mono); margin-bottom:4px; color:var(--accent)">{{ ex }}</p>
+    {% endfor %}
+  </div>
+
+  <div class="card">
+    <h4>Where to start</h4>
+    <p>{{ domain.learning_entry_point }}</p>
+  </div>
+
+
+  {% elif section == "bridges" %}
+  <h2>Cross-Domain Bridges</h2>
+  <p class="section-intro">{{ intro }}</p>
+
+  <h3 style="margin-bottom:14px">Universal structures</h3>
+  {% for b in multi_domain %}
+  <div class="bridge-card">
+    <h3>{{ b.concept_name }}</h3>
+    <p style="font-size:0.84rem; color:var(--text-dim); margin:4px 0 10px">Mechanic: {{ b.mechanic }}</p>
+    <p>{{ b.description }}</p>
+    <div class="bridge-instances">
+      {% for domain_id, example in b.instances.items() %}
+      <div class="bridge-instance">
+        <div class="domain-label">{{ domain_id }}</div>
+        <div>{{ example }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="empowerment-note">{{ b.insight }}</div>
+  </div>
+  {% endfor %}
+
+  <h3 style="margin:28px 0 14px">Specific pairwise bridges</h3>
+  {% for b in pairwise %}
+  <div class="bridge-card">
+    <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px">
+      <span class="badge">{{ b.from_domain }}</span>
+      <span style="color:var(--text-dim)">→</span>
+      <span class="badge">{{ b.to_domain }}</span>
+      <span style="font-size:0.78rem; color:var(--text-dim)">via {{ b.mechanic }}</span>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:10px">
+      <div>
+        <div style="font-size:0.75rem; color:var(--text-dim); margin-bottom:3px">{{ b.from_concept }}</div>
+        <div style="font-size:0.84rem; font-family:var(--mono); color:var(--accent)">{{ b.from_example }}</div>
+      </div>
+      <div>
+        <div style="font-size:0.75rem; color:var(--text-dim); margin-bottom:3px">{{ b.to_concept }}</div>
+        <div style="font-size:0.84rem; font-family:var(--mono); color:var(--accent)">{{ b.to_example }}</div>
+      </div>
+    </div>
+    <p style="font-size:0.84rem">{{ b.explanation }}</p>
+    {% if b.surprise_note %}
+    <div class="empowerment-note" style="color:var(--yellow); border-left-color:var(--yellow); background:rgba(245,200,66,0.06)">{{ b.surprise_note }}</div>
+    {% endif %}
+  </div>
+  {% endfor %}
+
+
+  {% elif section == "limits" %}
+  <h2>Language Limitations</h2>
+  <p class="section-intro">{{ intro }}</p>
+  {% for fm in failure_modes %}
+  <div class="card">
+    <h3>{{ fm.name }}</h3>
+    <p style="margin-bottom:10px">{{ fm.plain_description }}</p>
+    <div style="font-size:0.84rem; color:var(--text-dim); margin-bottom:8px">
+      <strong>Why it happens:</strong> {{ fm.why_it_happens }}
+    </div>
+    <div style="font-size:0.84rem; color:var(--text-dim); margin-bottom:8px">
+      <strong>Real-world impact:</strong> {{ fm.real_world_impact }}
+    </div>
+    {% if fm.domain_examples %}
+    <div style="margin:10px 0">
+      {% for domain_id, example in fm.domain_examples.items() %}
+      <div style="display:flex; gap:8px; margin-bottom:4px; font-size:0.82rem">
+        <span class="badge" style="flex-shrink:0">{{ domain_id }}</span>
+        <span>{{ example }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <div class="empowerment-note">{{ fm.empowerment_note }}</div>
+  </div>
+  {% endfor %}
+
+
+  {% elif section == "empower" %}
+  <h2>Empowerment</h2>
+  <div class="core-statement">{{ core_statement | replace("\n", "<br>") | safe }}</div>
+  <p class="section-intro">{{ intro }}</p>
+  {% for ins in insights %}
+  <div class="insight-box">
+    <div class="feeling">{{ ins.feeling }}</div>
+    <div class="truth">{{ ins.truth }}</div>
+    <ul class="evidence-list">
+      {% for ex in ins.examples %}
+      <li>{{ ex }}</li>
+      {% endfor %}
+    </ul>
+    {% if ins.action %}
+    <p style="font-size:0.84rem; color:var(--text-dim); margin-top:10px"><strong>What to do with it:</strong> {{ ins.action }}</p>
+    {% endif %}
+  </div>
+  {% endfor %}
+
+
+  {% elif section == "fagazzi" %}
+  <h2>Fagazzi Checker</h2>
+  <p class="lead">
+    Paste any text below. This tool detects corporate jargon, accountability-avoiding
+    passive voice, jargon displacement, and length inflation — the patterns that make
+    text harder without making it clearer.
+  </p>
+  <p style="font-size:0.83rem; color:var(--text-dim); margin-bottom:20px">
+    Named for the instinct: "this is unnecessarily complicated and I feel stupid for
+    not understanding it." The instinct is often right. This tool measures how right.
+  </p>
+
+  <textarea id="fz-input" class="fagazzi-area" placeholder="Paste your text here…"></textarea>
+  <div style="display:flex; gap:10px; margin-top:10px">
+    <button class="btn btn-primary" onclick="checkFagazzi()">Check text</button>
+    <button class="btn btn-ghost" onclick="clearFagazzi()">Clear</button>
+  </div>
+
+  <div id="fagazzi-result">
+    <div class="score-ring">
+      <div id="fz-score" class="score-number">0.00</div>
+      <div>
+        <div id="fz-verdict" style="font-size:1.1rem; font-weight:700; margin-bottom:4px"></div>
+        <div id="fz-dominant" style="font-size:0.8rem; color:var(--text-dim)"></div>
+      </div>
+    </div>
+    <div id="fz-empowerment" class="empowerment-note" style="margin-bottom:16px"></div>
+    <div id="fz-signals"></div>
+  </div>
+
+  <script>
+    async function checkFagazzi() {
+      const text = document.getElementById("fz-input").value.trim();
+      if (!text) return;
+
+      const res = await fetch("/fagazzi", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.error || "Something went wrong.");
+        return;
+      }
+
+      const data = await res.json();
+      renderResult(data);
+    }
+
+    function clearFagazzi() {
+      document.getElementById("fz-input").value = "";
+      document.getElementById("fagazzi-result").style.display = "none";
+    }
+
+    function renderResult(data) {
+      const resultEl = document.getElementById("fagazzi-result");
+      resultEl.style.display = "block";
+
+      const scoreEl = document.getElementById("fz-score");
+      scoreEl.textContent = data.fagazzi_score.toFixed(2);
+      scoreEl.className = "score-number " + {
+        "clear": "clear",
+        "mildly complex": "mild",
+        "unnecessarily complex": "complex",
+        "fagazzi": "fagazzi",
+      }[data.verdict] || "mild";
+
+      document.getElementById("fz-verdict").textContent = data.verdict.toUpperCase();
+      document.getElementById("fz-dominant").textContent =
+        data.dominant_type ? "Dominant pattern: " + data.dominant_type : "";
+      document.getElementById("fz-empowerment").textContent = data.empowerment_note;
+
+      const signalsEl = document.getElementById("fz-signals");
+      if (!data.signals || data.signals.length === 0) {
+        signalsEl.innerHTML = '<p style="color:var(--green)">No fagazzi patterns detected.</p>';
+        return;
+      }
+
+      signalsEl.innerHTML =
+        `<h4 style="margin-bottom:12px">${data.signals.length} signal${data.signals.length !== 1 ? "s" : ""} detected</h4>` +
+        data.signals.map(s => `
+          <div class="signal-item">
+            <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px">
+              <span class="badge ${s.severity === "high" ? "red" : s.severity === "medium" ? "yellow" : ""}">${s.severity}</span>
+              <span style="font-size:0.82rem; color:var(--text-dim)">${s.signal_type}</span>
+            </div>
+            <div class="span-text">"${s.span}"</div>
+            <p style="font-size:0.82rem; margin:4px 0">${s.explanation}</p>
+            ${s.plain_alternative ? `<div class="plain">Plain alternative: ${s.plain_alternative}</div>` : ""}
+          </div>
+        `).join("");
+    }
+  </script>
+
+
+  {% elif section == "sequence" %}
+  <h2>Learning Sequence</h2>
+  <p class="section-intro">
+    {{ total_minutes }} minutes total, at a reading pace. The sequence is deliberate:
+    mechanics before domains, empowerment throughout, limitations before the fagazzi checker.
+    Each step builds on the one before it — but you can dip in anywhere.
+  </p>
+  {% for step in sequence %}
+  <div class="sequence-row">
+    <span class="seq-num">{{ step.step_number }}</span>
+    <div style="flex:1">
+      <div style="font-size:0.9rem; font-weight:600; margin-bottom:3px">{{ step.title }}</div>
+      <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px">{{ step.learning_goal }}</div>
+      <div style="font-size:0.8rem; color:var(--green)">{{ step.empowerment_anchor }}</div>
+    </div>
+    <span class="seq-mins">{{ step.estimated_minutes }}m</span>
+  </div>
+  {% endfor %}
+
+
+  {% elif section == "not_found" %}
+  <h2>Not found</h2>
+  <p>That section doesn't exist. Try the navigation on the left.</p>
+
+  {% endif %}
+
+</main>
+</body>
+</html>
