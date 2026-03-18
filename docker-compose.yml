@@ -4,8 +4,8 @@ services:
   redpanda:
     image: docker.redpanda.com/redpandadata/redpanda:latest
     ports:
-      - "9092:9092"
-      - "9644:9644"
+      - "127.0.0.1:9092:9092"
+      - "127.0.0.1:9644:9644"
     command:
       - redpanda
       - start
@@ -24,15 +24,15 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
   minio:
     image: minio/minio
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
     environment:
       MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
       MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
@@ -43,7 +43,7 @@ services:
   meilisearch:
     image: getmeili/meilisearch:latest
     ports:
-      - "7700:7700"
+      - "127.0.0.1:7700:7700"
     environment:
       MEILI_MASTER_KEY: ${MEILISEARCH_API_KEY}
     volumes:
@@ -52,7 +52,7 @@ services:
   vault:
     image: hashicorp/vault:latest
     ports:
-      - "8200:8200"
+      - "127.0.0.1:8200:8200"
     environment:
       VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_TOKEN}
       VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
@@ -64,7 +64,7 @@ services:
   data-capture:
     build: ./services/data-capture
     ports:
-      - "8001:8000"
+      - "127.0.0.1:8001:8000"
     environment:
       - REDPANDA_BROKERS=${REDPANDA_BROKERS}
       - REDPANDA_TOPIC_DATA=${REDPANDA_TOPIC_DATA}
@@ -84,7 +84,7 @@ services:
   digital-library:
     build: ./services/digital-library
     ports:
-      - "8002:8000"
+      - "127.0.0.1:8002:8000"
     environment:
       - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_PORT=${POSTGRES_PORT}
@@ -107,7 +107,7 @@ services:
   ecological-eval:
     build: ./services/ecological-eval
     ports:
-      - "8003:8000"
+      - "127.0.0.1:8003:8000"
     environment:
       - REDPANDA_BROKERS=${REDPANDA_BROKERS}
       - POSTGRES_HOST=${POSTGRES_HOST}
